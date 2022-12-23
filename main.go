@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/go-playground/validator/v10"
@@ -18,29 +19,24 @@ type User struct {
 	Password string `json:"password" validate:"required"`
 }
 
-type IError struct {
-	Field string
-	Tag   string
-	Value string
+type Response struct {
+	Data   string `json:"data"`
+	Status int    `json:"status"`
 }
 
 var validate = validator.New()
 
 func ValidateUser(c *fiber.Ctx) error {
-	var errors []*IError
 	body := new(User)
 	c.BodyParser(&body)
 
 	err := validate.Struct(body)
 	if err != nil {
-		for _, err := range err.(validator.ValidationErrors) {
-			var el IError
-			el.Field = err.Field()
-			el.Tag = err.Tag()
-			el.Value = err.Param()
-			errors = append(errors, &el)
+		res := Response{
+			Data:   http.StatusText(http.StatusBadRequest),
+			Status: fiber.ErrBadRequest.Code,
 		}
-		return c.SendStatus(fiber.ErrBadRequest.Code)
+		return c.JSON(res)
 	}
 	return c.Next()
 }
@@ -50,8 +46,8 @@ func main() {
 		Prefork:      true,
 		ServerHeader: "Fiber",
 		AppName:      "API v0.1",
-		JSONEncoder: json.Marshal,
-		JSONDecoder: json.Unmarshal,
+		JSONEncoder:  json.Marshal,
+		JSONDecoder:  json.Unmarshal,
 	})
 
 	app.Use(cors.New(cors.Config{
