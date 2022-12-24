@@ -3,14 +3,14 @@ package userhandle
 import (
 	"net/http"
 	ResType "rest/api/types/Response"
-	UserTyoe "rest/api/types/User"
+	UserType "rest/api/types/User"
 
 	"github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v2"
 )
 
 type (
-	User     UserTyoe.User
+	User     UserType.User
 	Response ResType.Response
 )
 
