@@ -2,8 +2,8 @@ package user
 
 import (
 	"net/http"
-	ResType "rest/api/interfaces/Response"
-	UserType "rest/api/interfaces/User"
+	ResType "rest/api/models/Response"
+	UserType "rest/api/models/User"
 
 	"github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v2"

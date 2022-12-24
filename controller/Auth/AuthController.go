@@ -2,8 +2,8 @@ package auth
 
 import (
 	"net/http"
-	login "rest/api/interfaces/Login"
-	ResType "rest/api/interfaces/Response"
+	login "rest/api/models/Login"
+	ResType "rest/api/models/Response"
 
 	"github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v2"

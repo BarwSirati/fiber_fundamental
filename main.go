@@ -6,13 +6,16 @@ import (
 	"log"
 
 	"os"
+	"rest/api/configs"
 	"rest/api/middleware"
+	"rest/api/migration"
 	"rest/api/routes"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/joho/godotenv"
 )
 
 var (
@@ -24,18 +27,6 @@ var (
 		JSONDecoder:  json.Unmarshal,
 	})
 )
-
-func init() {
-
-	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost",
-		AllowHeaders: "Origin, Content-Type, Accept",
-	}))
-
-	app.Use(compress.New(compress.Config{
-		Level: compress.LevelBestCompression,
-	}))
-}
 
 func Log() {
 	path := "log"
@@ -58,13 +49,29 @@ func Log() {
 	}))
 
 	app.Use(middleware.New())
+	Log()
+}
+
+func init() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		panic(err)
+	}
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "http://localhost",
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
+
+	app.Use(compress.New(compress.Config{
+		Level: compress.LevelBestCompression,
+	}))
 }
 
 func main() {
-	Log()
-	api := app.Group("/api")
-	routes.RouteInit(api)
-	errRun := app.Listen(":3000")
+	configs.ConnectDB()
+	migration.RunMigration()
+	routes.RouteInit(app.Group("/api"))
+	errRun := app.Listen(":" + os.Getenv("PORT"))
 	if errRun != nil {
 		panic(errRun)
 	}
