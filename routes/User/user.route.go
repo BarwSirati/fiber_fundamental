@@ -7,6 +7,7 @@ import (
 )
 
 func UserInit(router fiber.Router) {
-	router.Get("/", userController.GetUser)
+	router.Get("/", userController.GetUsers)
+	router.Get("/:id", userController.GetUser)
 	router.Post("/", userController.ValidateUser, userController.AddUser)
 }
