@@ -1,9 +1,9 @@
-package userhandle
+package user
 
 import (
 	"net/http"
-	ResType "rest/api/types/Response"
-	UserType "rest/api/types/User"
+	ResType "rest/api/interfaces/Response"
+	UserType "rest/api/interfaces/User"
 
 	"github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v2"
@@ -39,10 +39,7 @@ func GetUser(c *fiber.Ctx) error {
 	return c.JSON(data)
 }
 
-func AddUserr(c *fiber.Ctx) error {
-	data := User{
-		Username: "bxdman",
-		Password: "bxdman",
-	}
-	return c.JSON(data)
+func AddUser(c *fiber.Ctx) error {
+
+	return c.Send(c.Body())
 }

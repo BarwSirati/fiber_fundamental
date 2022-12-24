@@ -6,7 +6,8 @@ import (
 	"log"
 
 	"os"
-	userHandle "rest/api/handlers/User"
+	"rest/api/middleware"
+	"rest/api/routes"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
@@ -55,15 +56,14 @@ func Log() {
 		Format:   "[${ip}]:${port} ${status} - ${method} ${path}\n",
 		Output:   file,
 	}))
+
+	app.Use(middleware.New())
 }
 
 func main() {
 	Log()
 	api := app.Group("/api")
-	user := api.Group("/user")
-
-	user.Get("/", userHandle.GetUser)
-	user.Post("/", userHandle.ValidateUser, userHandle.AddUserr)
+	routes.RouteInit(api)
 	errRun := app.Listen(":3000")
 	if errRun != nil {
 		panic(errRun)
